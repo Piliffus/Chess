@@ -3,6 +3,7 @@ public class Board
     private int sizeX;
     private int sizeY;
     private Field[][] fields;
+    Output output = OutputStdout.getInstance();
 
     public void putPiece(Piece piece, Coordinate coordinate)
     {
@@ -11,7 +12,7 @@ public class Board
 
     public void printBoard()
     {
-        Output.printBoard(this);
+        output.printBoard(this);
     }
 
     public int getSizeX()

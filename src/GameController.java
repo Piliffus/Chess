@@ -6,13 +6,22 @@ public class GameController
     private Board board;
     private List<Player> players;
     private int turnNumber;
+    Output output = OutputStdout.getInstance();
 
     public void start()
     {
         restartTurnNumber();
         restartPlayerPieces();
         playersSetUpPieces();
+        printStartingBoard();
+//        playTurn();
+    }
+
+    private void printStartingBoard()
+    {
+//        output.printStartingMessage();
         board.printBoard();
+//        output.printPlayerNames(players);
     }
 
     private void restartPlayerPieces()

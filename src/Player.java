@@ -6,6 +6,8 @@ public abstract class Player
 {
     protected PlayerColor color;
     private List<List<Piece>> pieces;
+    String name;
+    Output output = OutputStdout.getInstance();
 
     public final PlayerColor getColor()
     {
@@ -14,7 +16,7 @@ public abstract class Player
 
     public void printPieces()
     {
-        Output.printPieces(pieces);
+        output.printPieces(pieces);
     }
 
     public void givePiece(Piece piece)
@@ -40,17 +42,6 @@ public abstract class Player
                 return pieces.get(5);
             default:
                 return null;
-        }
-    }
-
-    public Player(PlayerColor color)
-    {
-        this.color = color;
-        pieces = new ArrayList<>(PieceType.howManyPieceTypes());
-
-        for (int i = 0; i < PieceType.howManyPieceTypes(); i++)
-        {
-            pieces.add(i, new ArrayList<>(1));
         }
     }
 
@@ -86,5 +77,18 @@ public abstract class Player
     private Piece getPiece(PieceType pieceType, int whichPiece)
     {
         return Objects.requireNonNull(findListWithType(pieceType)).get(whichPiece);
+    }
+
+    public Player(PlayerColor color)
+    {
+        this.color = color;
+        // Make main list with types
+        pieces = new ArrayList<>(PieceType.howManyPieceTypes());
+
+        // Make specific lists with types
+        for (int i = 0; i < PieceType.howManyPieceTypes(); i++)
+        {
+            pieces.add(i, new ArrayList<>(1));
+        }
     }
 }
