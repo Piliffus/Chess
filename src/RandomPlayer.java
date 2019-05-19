@@ -25,7 +25,7 @@ public class RandomPlayer extends Player
             output.prepareTurnEndMessage(moveToMake, board);
             putPieceOnPosition(moveToMake);
         }
-        else throw new NoPossibleMovesException();
+        else throw new NoPossibleMovesException(this);
     }
 
     public RandomPlayer(PlayerColor color, String name, Board board)

@@ -2,7 +2,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-        GameController gameController = new GameController(8, 8, 2, true);
+        GameController gameController = new GameController(8, 8, 2, false, true);
         gameController.start();
     }
 }

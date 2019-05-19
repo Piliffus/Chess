@@ -1,6 +1,6 @@
 public enum PlayerColor
 {
-    WHITE, BLACK, COLORLESS;
+    white, black, COLORLESS;
 
     public static int howManyColors()
     {

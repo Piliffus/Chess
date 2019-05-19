@@ -160,14 +160,29 @@ public abstract class Player
     {
         ArrayList<Coordinate> returnedPossibleNewCoordinates = new ArrayList<>(0);
 
-        fieldSuitabilityCheckWithBoundCheck(piece.getCurrentPosition().getX(), piece.getCurrentPosition().getY() + 1,
-                returnedPossibleNewCoordinates);
+        if (piece.getColor() == PlayerColor.black)
+        {
+            fieldSuitabilityCheckWithBoundCheck(piece.getCurrentPosition().getX(), piece.getCurrentPosition().getY() + 1,
+                    returnedPossibleNewCoordinates);
 
-        fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() + 1, piece.getCurrentPosition().getY()+1,
-                returnedPossibleNewCoordinates);
+            fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() + 1, piece.getCurrentPosition().getY() + 1,
+                    returnedPossibleNewCoordinates);
 
-        fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() - 1, piece.getCurrentPosition().getY()+1,
-                returnedPossibleNewCoordinates);
+            fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() - 1, piece.getCurrentPosition().getY() + 1,
+                    returnedPossibleNewCoordinates);
+        }
+
+        else // White
+        {
+            fieldSuitabilityCheckWithBoundCheck(piece.getCurrentPosition().getX(), piece.getCurrentPosition().getY() - 1,
+                    returnedPossibleNewCoordinates);
+
+            fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() + 1, piece.getCurrentPosition().getY() - 1,
+                    returnedPossibleNewCoordinates);
+
+            fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() - 1, piece.getCurrentPosition().getY() - 1,
+                    returnedPossibleNewCoordinates);
+        }
 
         return returnedPossibleNewCoordinates;
     }
@@ -309,8 +324,16 @@ public abstract class Player
     {
         if (!fieldOccupiedByFriendly(x, y))
         {
-            returnedPossibleNewCoordinates.add(new Coordinate(x, y));
-            return true;
+            if (fieldOccupiedByEnemy(x, y)) // we can go there, but that`s it
+            {
+                returnedPossibleNewCoordinates.add(new Coordinate(x, y));
+                return false;
+            }
+            else // empty field
+            {
+                returnedPossibleNewCoordinates.add(new Coordinate(x, y));
+                return true;
+            }
         }
         else // field occupied by friendly, so we return false: signal to finish searching for possible new coordinates.
         {

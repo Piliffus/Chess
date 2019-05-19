@@ -12,6 +12,10 @@ public class GameController
     private boolean gameOver;
     // If waitForUser is true game will wait for prompt from user before each turn
     private boolean waitForUser;
+    // If randomNames is true game won`t ask player for custom player names
+    private boolean randomNames;
+
+    // TODO: fauxAnimatedMode
 
     public void start()
     {
@@ -69,8 +73,7 @@ public class GameController
                 catch (NoPossibleMovesException e)
                 {
                     gameOver = true;
-                    // TODO: replace with loser
-                    output.prepareGameEndMessage(players, null, GameEndConditions.OUT_OF_MOVES);
+                    output.prepareGameEndMessage(players, e.getLoser(), GameEndConditions.OUT_OF_MOVES);
                 }
                 finally
                 {
@@ -103,7 +106,10 @@ public class GameController
         output.printStartingMessage();
         board.printBoard();
         output.printPlayerNames(players);
-        output.printSpectatorNames(spectators);
+        if (!spectators.isEmpty())
+        {
+            output.printSpectatorNames(spectators);
+        }
     }
 
     private void restartPlayerPieces()
@@ -144,19 +150,19 @@ public class GameController
         {
             if (i == 0)
             {
-                output.printPlayerNamePrompt(PlayerColor.WHITE);
-                players.add(i, new RandomPlayer(PlayerColor.WHITE, input.readName(), board));
+                if (!randomNames) output.printPlayerNamePrompt(PlayerColor.white);
+                players.add(i, new RandomPlayer(PlayerColor.white, randomNames ? input.randomName() : input.readName(), board));
             }
             else if (i == 1)
             {
-                output.printPlayerNamePrompt(PlayerColor.BLACK);
-                players.add(i, new RandomPlayer(PlayerColor.BLACK, input.readName(), board));
+                if (!randomNames) output.printPlayerNamePrompt(PlayerColor.black);
+                players.add(i, new RandomPlayer(PlayerColor.black, randomNames ? input.randomName() : input.readName(), board));
             }
             else
             {
                 // Excess players will be spectators
-                output.printSpectatorNamePrompt();
-                spectators.add(new Spectator(input.readName()));
+                if (!randomNames) output.printSpectatorNamePrompt();
+                spectators.add(new Spectator(randomNames ? input.randomName() : input.readName()));
             }
         }
     }
@@ -174,9 +180,10 @@ public class GameController
         }
     }
 
-    public GameController(int boardXSize, int boardYSize, int howManyPlayers, boolean waitForUser)
+    public GameController(int boardXSize, int boardYSize, int howManyPlayers, boolean waitForUser, boolean randomNames)
     {
         this.waitForUser = waitForUser;
+        this.randomNames = randomNames;
         this.input = InputStdin.getInstance();
         this.output = OutputStdout.getInstance();
         prepareBoard(boardXSize, boardYSize);

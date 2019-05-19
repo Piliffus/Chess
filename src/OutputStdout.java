@@ -28,7 +28,7 @@ public class OutputStdout implements Output
             preparedEndTurnMessage += " beating ";
             preparedEndTurnMessage += otherPiece.getLook();
         }
-        preparedEndTurnMessage += '\n';
+        preparedEndTurnMessage += "\n\n"; // Looks clearer with additional empty line
     }
 
     @Override
@@ -101,22 +101,21 @@ public class OutputStdout implements Output
     @Override
     public void printBoard(Board board)
     {
-        int initialYRow = 8;
         printXRowsNames(board.getSizeX());
         printBoardFrame(boardSides.TOP, board.getSizeX());
-        for (int x = 0; x < board.getSizeX(); x++)
+        for (int y = board.getSizeY() - 1; y >= 0; y--)
         {
-            printYRowName(initialYRow - x);
+            printYRowName(y+1);
             printBoardFrame(boardSides.LEFT);
-            for (int y = 0; y < board.getSizeY(); y++)
+            for (int x = 0; x < board.getSizeX(); x++)
             {
-                if (board.getFields()[y][x].getPiece() == null)
+                if (board.getFields()[x][y].getPiece() == null)
                 {
                     System.out.print(".");
                 }
                 else
                 {
-                    System.out.print(board.getFields()[y][x].getPiece().getLook());
+                    System.out.print(board.getFields()[x][y].getPiece().getLook());
                 }
             }
             printBoardFrame(boardSides.RIGHT);
@@ -153,7 +152,7 @@ public class OutputStdout implements Output
     {
         for (Player player : players)
         {
-            System.out.println(player.getColor().name() + ": " + player.getName());
+            System.out.println(player.getColor().name() + " pieces: " + player.getName());
         }
     }
 

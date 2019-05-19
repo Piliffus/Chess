@@ -33,7 +33,7 @@ public enum PieceType
         {
             case COLORLESS:
                 return '?';
-            case BLACK:
+            case black:
                 switch (pieceType)
                 {
                     case KING:
@@ -49,7 +49,7 @@ public enum PieceType
                     case PAWN:
                         return '♟';
                 }
-            case WHITE:
+            case white:
                 switch (pieceType)
                 {
                     case KING:
@@ -73,7 +73,7 @@ public enum PieceType
     public static List<Coordinate> getStartingCoordinatesFor(PieceType pieceType, PlayerColor color)
     {
         List<Coordinate> returnedList = new ArrayList<>(1);
-        int colorValue = color == PlayerColor.WHITE ? 0 : 7;
+        int colorValue = color == PlayerColor.white ? 0 : 7;
 
         switch (pieceType)
         {
@@ -96,7 +96,7 @@ public enum PieceType
                 returnedList.add(new Coordinate(4, colorValue));
                 break;
             case PAWN:
-                colorValue = color == PlayerColor.WHITE ? 1 : 6;
+                colorValue = color == PlayerColor.white ? 1 : 6;
                 for (int i = 0; i < howManyStartingPiecesOfType(PieceType.PAWN); i++)
                 {
                     returnedList.add(new Coordinate(i, colorValue));
