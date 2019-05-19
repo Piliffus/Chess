@@ -163,7 +163,7 @@ public class OutputStdout implements Output
     }
 
     @Override
-    public void printPlayerNamePrompt(PlayerColor color)
+    public void printPlayerNamePrompt(PlayerPiecesColor color)
     {
         System.out.println("Assign name to player playing " + color.name() + " pieces:");
     }

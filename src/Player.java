@@ -3,13 +3,31 @@ import java.util.List;
 
 public abstract class Player
 {
-    private PlayerColor color;
-    private List<List<Piece>> pieces;
-    private String name;
     protected Output output;
     protected Board board;
+    private PlayerPiecesColor color;
+    private List<List<Piece>> pieces;
+    private String name;
 
-    public final PlayerColor getColor()
+    public Player(PlayerPiecesColor color, String name, Board board)
+    {
+        this.board = board;
+        this.output = OutputStdout.getInstance();
+        this.color = color;
+        // Make main list with types
+        this.pieces = new ArrayList<>(PieceType.howManyPieceTypes());
+
+        // Make specific lists with types
+        for (int i = 0; i < PieceType.howManyPieceTypes(); i++)
+        {
+            this.pieces.add(i, new ArrayList<>(1));
+        }
+
+        this.name = name;
+
+    }
+
+    public final PlayerPiecesColor getColor()
     {
         return color;
     }
@@ -40,28 +58,6 @@ public abstract class Player
         }
 
         return returnedPossibleMoves;
-    }
-
-    protected class PossibleMove
-    {
-        private Piece piece;
-        private Coordinate newCoordinate;
-
-        public Piece getPiece()
-        {
-            return piece;
-        }
-
-        public Coordinate getNewCoordinate()
-        {
-            return newCoordinate;
-        }
-
-        public PossibleMove(Piece piece, Coordinate newCoordinate)
-        {
-            this.piece = piece;
-            this.newCoordinate = newCoordinate;
-        }
     }
 
     public final void restartPieces()
@@ -124,7 +120,7 @@ public abstract class Player
         board.putPiece(piece, coordinate);
     }
 
-    protected void putPieceOnPosition(PossibleMove madeMove)
+    protected final void putPieceOnPosition(PossibleMove madeMove)
     {
         board.putPiece(madeMove.piece, madeMove.newCoordinate);
     }
@@ -160,21 +156,9 @@ public abstract class Player
     {
         ArrayList<Coordinate> returnedPossibleNewCoordinates = new ArrayList<>(0);
 
-        if (piece.getColor() == PlayerColor.black)
+        if (piece.getColor() == PlayerPiecesColor.black)
         {
-            fieldSuitabilityCheckWithBoundCheck(piece.getCurrentPosition().getX(), piece.getCurrentPosition().getY() + 1,
-                    returnedPossibleNewCoordinates);
-
-            fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() + 1, piece.getCurrentPosition().getY() + 1,
-                    returnedPossibleNewCoordinates);
-
-            fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() - 1, piece.getCurrentPosition().getY() + 1,
-                    returnedPossibleNewCoordinates);
-        }
-
-        else // White
-        {
-            fieldSuitabilityCheckWithBoundCheck(piece.getCurrentPosition().getX(), piece.getCurrentPosition().getY() - 1,
+            fieldSuitabilityCheckWithBoundCheckForPawn(piece.getCurrentPosition().getX(), piece.getCurrentPosition().getY() - 1,
                     returnedPossibleNewCoordinates);
 
             fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() + 1, piece.getCurrentPosition().getY() - 1,
@@ -184,33 +168,48 @@ public abstract class Player
                     returnedPossibleNewCoordinates);
         }
 
+        else // White
+        {
+            fieldSuitabilityCheckWithBoundCheckForPawn(piece.getCurrentPosition().getX(), piece.getCurrentPosition().getY() + 1,
+                    returnedPossibleNewCoordinates);
+
+            fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() + 1, piece.getCurrentPosition().getY() + 1,
+                    returnedPossibleNewCoordinates);
+
+            fieldSuitabilityCheckPawnSpecialCase(piece.getCurrentPosition().getX() - 1, piece.getCurrentPosition().getY() + 1,
+                    returnedPossibleNewCoordinates);
+        }
+
         return returnedPossibleNewCoordinates;
     }
 
-    private boolean fieldSuitabilityCheckPawnSpecialCase(int x, int y, ArrayList<Coordinate> returnedPossibleNewCoordinates)
+    private void fieldSuitabilityCheckWithBoundCheckForPawn(int x, int y, ArrayList<Coordinate> returnedPossibleNewCoordinates)
     {
         // Check for bounds
         if (xOk(x) && yOk(y))
         {
-            if (!fieldOccupiedByFriendly(x, y))
+            if (fieldNotOccupiedByFriendly(x, y) && (!fieldOccupiedByEnemy(x, y)))
+            {
+                returnedPossibleNewCoordinates.add(new Coordinate(x, y));
+            }
+        }
+    }
+
+    private void fieldSuitabilityCheckPawnSpecialCase(int x, int y, ArrayList<Coordinate> returnedPossibleNewCoordinates)
+    {
+        // Check for bounds
+        if (xOk(x) && yOk(y))
+        {
+            if (fieldNotOccupiedByFriendly(x, y))
             {
                 if (fieldOccupiedByEnemy(x, y))
                 {
                     returnedPossibleNewCoordinates.add(new Coordinate(x, y));
-                    return true;
                 }
-                else // Pawn can only move there if it has an enemy there
-                {
-                    return false;
-                }
-            }
-            else // field occupied by friendly, so we return false
-            {
-                return false;
             }
         }
         // Out of bounds
-        else return false;
+
     }
 
     private List<Coordinate> getPossibleMovesKnight(Piece piece)
@@ -255,7 +254,7 @@ public abstract class Player
         for (int newX = piece.getCurrentPosition().getX() + 1, newY = piece.getCurrentPosition().getY() + 1;
              newX < board.getSizeX() && newY < board.getSizeY(); newX++, newY++)
         {
-            if (!fieldSuitabilityCheck(newX, newY, returnedPossibleNewCoordinates)) break;
+            if (fieldNotSuitabilityCheck(newX, newY, returnedPossibleNewCoordinates)) break;
         }
 
         // up - left
@@ -263,7 +262,7 @@ public abstract class Player
         for (int newX = piece.getCurrentPosition().getX() - 1, newY = piece.getCurrentPosition().getY() + 1;
              newX >= 0 && newY < board.getSizeY(); newX--, newY++)
         {
-            if (!fieldSuitabilityCheck(newX, newY, returnedPossibleNewCoordinates)) break;
+            if (fieldNotSuitabilityCheck(newX, newY, returnedPossibleNewCoordinates)) break;
         }
 
         // down - right
@@ -271,7 +270,7 @@ public abstract class Player
         for (int newX = piece.getCurrentPosition().getX() + 1, newY = piece.getCurrentPosition().getY() - 1;
              newX < board.getSizeX() && newY >= 0; newX++, newY--)
         {
-            if (!fieldSuitabilityCheck(newX, newY, returnedPossibleNewCoordinates)) break;
+            if (fieldNotSuitabilityCheck(newX, newY, returnedPossibleNewCoordinates)) break;
         }
 
         // down - left
@@ -279,7 +278,7 @@ public abstract class Player
         for (int newX = piece.getCurrentPosition().getX() - 1, newY = piece.getCurrentPosition().getY() - 1;
              newX >= 0 && newY >= 0; newX--, newY--)
         {
-            if (!fieldSuitabilityCheck(newX, newY, returnedPossibleNewCoordinates)) break;
+            if (fieldNotSuitabilityCheck(newX, newY, returnedPossibleNewCoordinates)) break;
         }
 
         return returnedPossibleNewCoordinates;
@@ -293,71 +292,64 @@ public abstract class Player
 
         for (int newX = piece.getCurrentPosition().getX() - 1; newX >= 0; newX--)
         {
-            if (!fieldSuitabilityCheck(newX, piece.getCurrentPosition().getY(), returnedPossibleNewCoordinates)) break;
+            if (fieldNotSuitabilityCheck(newX, piece.getCurrentPosition().getY(), returnedPossibleNewCoordinates)) break;
         }
 
         // down
 
         for (int newY = piece.getCurrentPosition().getY() - 1; newY >= 0; newY--)
         {
-            if (!fieldSuitabilityCheck(piece.getCurrentPosition().getX(), newY, returnedPossibleNewCoordinates)) break;
+            if (fieldNotSuitabilityCheck(piece.getCurrentPosition().getX(), newY, returnedPossibleNewCoordinates)) break;
         }
 
         // right
 
         for (int newX = piece.getCurrentPosition().getX() + 1; newX < board.getSizeX(); newX++)
         {
-            if (!fieldSuitabilityCheck(newX, piece.getCurrentPosition().getY(), returnedPossibleNewCoordinates)) break;
+            if (fieldNotSuitabilityCheck(newX, piece.getCurrentPosition().getY(), returnedPossibleNewCoordinates)) break;
         }
 
         // up
 
         for (int newY = piece.getCurrentPosition().getY() + 1; newY < board.getSizeY(); newY++)
         {
-            if (!fieldSuitabilityCheck(piece.getCurrentPosition().getX(), newY, returnedPossibleNewCoordinates)) break;
+            if (fieldNotSuitabilityCheck(piece.getCurrentPosition().getX(), newY, returnedPossibleNewCoordinates)) break;
         }
 
         return returnedPossibleNewCoordinates;
     }
 
-    private boolean fieldSuitabilityCheck(int x, int y, ArrayList<Coordinate> returnedPossibleNewCoordinates)
+    private boolean fieldNotSuitabilityCheck(int x, int y, ArrayList<Coordinate> returnedPossibleNewCoordinates)
     {
-        if (!fieldOccupiedByFriendly(x, y))
+        if (fieldNotOccupiedByFriendly(x, y))
         {
             if (fieldOccupiedByEnemy(x, y)) // we can go there, but that`s it
             {
                 returnedPossibleNewCoordinates.add(new Coordinate(x, y));
-                return false;
+                return true;
             }
             else // empty field
             {
                 returnedPossibleNewCoordinates.add(new Coordinate(x, y));
-                return true;
+                return false;
             }
         }
         else // field occupied by friendly, so we return false: signal to finish searching for possible new coordinates.
         {
-            return false;
+            return true;
         }
     }
 
-    private boolean fieldSuitabilityCheckWithBoundCheck(int x, int y, ArrayList<Coordinate> returnedPossibleNewCoordinates)
+    private void fieldSuitabilityCheckWithBoundCheck(int x, int y, ArrayList<Coordinate> returnedPossibleNewCoordinates)
     {
         // Additional check for bounds
         if (xOk(x) && yOk(y))
         {
-            if (!fieldOccupiedByFriendly(x, y))
+            if (fieldNotOccupiedByFriendly(x, y))
             {
                 returnedPossibleNewCoordinates.add(new Coordinate(x, y));
-                return true;
-            }
-            else // field occupied by friendly, so we return false
-            {
-                return false;
             }
         }
-        // Out of bounds
-        else return false;
     }
 
     private List<Coordinate> getPossibleMovesKing(Piece piece)
@@ -389,16 +381,16 @@ public abstract class Player
         else return pieceOnCheckedField.getColor() != this.color;
     }
 
-    private boolean fieldOccupiedByFriendly(int newX, int newY)
+    private boolean fieldNotOccupiedByFriendly(int newX, int newY)
     {
         Piece pieceOnCheckedField = board.getFields()[newX][newY].getPiece();
         // Checked field is empty
         if (pieceOnCheckedField == null)
         {
-            return false;
+            return true;
         }
         // If piece on checked field has same color as piece we are about to move, then it is friendly so return true
-        else return pieceOnCheckedField.getColor() == this.color;
+        else return pieceOnCheckedField.getColor() != this.color;
     }
 
     private boolean yOk(int newY)
@@ -411,23 +403,27 @@ public abstract class Player
         return newX < board.getSizeX() && newX >= 0;
     }
 
-    public Player(PlayerColor color, String name, Board board)
-    {
-        this.board = board;
-        this.output = OutputStdout.getInstance();
-        this.color = color;
-        // Make main list with types
-        this.pieces = new ArrayList<>(PieceType.howManyPieceTypes());
+    public abstract void nextMove() throws NoPossibleMovesException;
 
-        // Make specific lists with types
-        for (int i = 0; i < PieceType.howManyPieceTypes(); i++)
+    protected class PossibleMove
+    {
+        private Piece piece;
+        private Coordinate newCoordinate;
+
+        public PossibleMove(Piece piece, Coordinate newCoordinate)
         {
-            this.pieces.add(i, new ArrayList<>(1));
+            this.piece = piece;
+            this.newCoordinate = newCoordinate;
         }
 
-        this.name = name;
+        public Piece getPiece()
+        {
+            return piece;
+        }
 
+        public Coordinate getNewCoordinate()
+        {
+            return newCoordinate;
+        }
     }
-
-    public abstract void nextMove() throws NoPossibleMovesException;
 }

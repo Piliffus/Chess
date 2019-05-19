@@ -1,4 +1,4 @@
-public class Board
+class Board
 {
     private int sizeX;
     private int sizeY;

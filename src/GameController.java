@@ -141,22 +141,22 @@ public class GameController
     private void preparePlayers(int howManyPlayers)
     {
         //TODO: different types of players
-        players = new ArrayList<>(PlayerColor.howManyColors());
+        players = new ArrayList<>(PlayerPiecesColor.howManyColors());
         // If we have less players than colors, then amount of spectators defaults to 0, se we don`t get negative size
-        spectators = new ArrayList<>(howManyPlayers - PlayerColor.howManyColors() >= 0 ?
-                howManyPlayers - PlayerColor.howManyColors() : 0);
+        spectators = new ArrayList<>(howManyPlayers - PlayerPiecesColor.howManyColors() >= 0 ?
+                howManyPlayers - PlayerPiecesColor.howManyColors() : 0);
 
         for (int i = 0; i < howManyPlayers; i++)
         {
             if (i == 0)
             {
-                if (!randomNames) output.printPlayerNamePrompt(PlayerColor.white);
-                players.add(i, new RandomPlayer(PlayerColor.white, randomNames ? input.randomName() : input.readName(), board));
+                if (!randomNames) output.printPlayerNamePrompt(PlayerPiecesColor.white);
+                players.add(i, new RandomPlayer(PlayerPiecesColor.white, randomNames ? input.randomName() : input.readName(), board));
             }
             else if (i == 1)
             {
-                if (!randomNames) output.printPlayerNamePrompt(PlayerColor.black);
-                players.add(i, new RandomPlayer(PlayerColor.black, randomNames ? input.randomName() : input.readName(), board));
+                if (!randomNames) output.printPlayerNamePrompt(PlayerPiecesColor.black);
+                players.add(i, new RandomPlayer(PlayerPiecesColor.black, randomNames ? input.randomName() : input.readName(), board));
             }
             else
             {

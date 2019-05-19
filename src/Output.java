@@ -14,7 +14,7 @@ public interface Output
 
     void printSpectatorNamePrompt();
 
-    void printPlayerNamePrompt(PlayerColor color);
+    void printPlayerNamePrompt(PlayerPiecesColor color);
 
     void printTurnNumber(int turnNumber);
 

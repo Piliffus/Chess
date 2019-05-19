@@ -27,9 +27,9 @@ public enum PieceType
         }
     }
 
-    public static char findLookFor(PieceType pieceType, PlayerColor playerColor)
+    public static char findLookFor(PieceType pieceType, PlayerPiecesColor playerPiecesColor)
     {
-        switch (playerColor)
+        switch (playerPiecesColor)
         {
             case COLORLESS:
                 return '?';
@@ -70,10 +70,10 @@ public enum PieceType
         return '?';
     }
 
-    public static List<Coordinate> getStartingCoordinatesFor(PieceType pieceType, PlayerColor color)
+    public static List<Coordinate> getStartingCoordinatesFor(PieceType pieceType, PlayerPiecesColor color)
     {
         List<Coordinate> returnedList = new ArrayList<>(1);
-        int colorValue = color == PlayerColor.white ? 0 : 7;
+        int colorValue = color == PlayerPiecesColor.white ? 0 : 7;
 
         switch (pieceType)
         {
@@ -96,7 +96,7 @@ public enum PieceType
                 returnedList.add(new Coordinate(4, colorValue));
                 break;
             case PAWN:
-                colorValue = color == PlayerColor.white ? 1 : 6;
+                colorValue = color == PlayerPiecesColor.white ? 1 : 6;
                 for (int i = 0; i < howManyStartingPiecesOfType(PieceType.PAWN); i++)
                 {
                     returnedList.add(new Coordinate(i, colorValue));

@@ -2,9 +2,14 @@ public class Piece
 {
     private PieceType pieceType;
     private Player owner;
-    private PlayerColor color;
+    private PlayerPiecesColor color;
     private char look;
     private Coordinate currentPosition;
+
+    public void setCurrentPosition(Coordinate currentPosition)
+    {
+        this.currentPosition = currentPosition;
+    }
 
     public char getLook()
     {
@@ -16,17 +21,12 @@ public class Piece
         return currentPosition;
     }
 
-    public void setCurrentPosition(Coordinate currentPosition)
-    {
-        this.currentPosition = currentPosition;
-    }
-
     public Player getOwner()
     {
         return owner;
     }
 
-    public PlayerColor getColor()
+    public PlayerPiecesColor getColor()
     {
         return color;
     }
@@ -36,7 +36,7 @@ public class Piece
         return pieceType;
     }
 
-    public Piece(PieceType pieceType, PlayerColor color, Player owner)
+    public Piece(PieceType pieceType, PlayerPiecesColor color, Player owner)
     {
         this.owner = owner;
         this.pieceType = pieceType;

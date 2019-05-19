@@ -1,4 +1,4 @@
-public enum PlayerColor
+public enum PlayerPiecesColor
 {
     white, black, COLORLESS;
 
