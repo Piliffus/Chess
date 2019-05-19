@@ -9,19 +9,21 @@ public class GameController
     private int turnNumber;
     private Output output;
     private Input input;
+    private boolean gameOver;
 
     public void start()
     {
+        gameOver = false;
         restartTurnNumber();
         restartPlayerPieces();
         playersSetUpPieces();
         printStartingBoard();
         playGame();
     }
-
+// TODO: usuwanie zbitych pionów, zbicie króla zwycięstwo, komunikaty o ruchach, zbiciu, końcu gry,
     private void playGame()
     {
-        for (; turnNumber <= 50; turnNumber++)
+        for (; turnNumber <= 50 && !gameOver; turnNumber++)
         {
             output.printTurnNumber(turnNumber);
             playTurn();
@@ -32,8 +34,21 @@ public class GameController
     {
         for (Player player : players)
         {
-            player.nextMove();
-            output.printBoard(board);
+            if (!gameOver)
+            {
+                try
+                {
+                    player.nextMove();
+                }
+                catch (NoPossibleMovesException e)
+                {
+                    gameOver = true;
+                }
+                finally
+                {
+                    output.printBoard(board);
+                }
+            }
         }
     }
 

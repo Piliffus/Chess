@@ -308,7 +308,7 @@ public abstract class Player
                 returnedPossibleNewCoordinates.add(new Coordinate(x, y));
                 return true;
             }
-            else // field occupied by friendly, so we return false: signal to finish searching for possible new coordinates.
+            else // field occupied by friendly, so we return false
             {
                 return false;
             }
@@ -386,5 +386,5 @@ public abstract class Player
 
     }
 
-    public abstract void nextMove();
+    public abstract void nextMove() throws NoPossibleMovesException;
 }

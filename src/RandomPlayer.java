@@ -7,7 +7,7 @@ public class RandomPlayer extends Player
     private Random random;
 
     @Override
-    public void nextMove()
+    public void nextMove() throws NoPossibleMovesException
     {
         List<PossibleMove> possibleMoves = new ArrayList<>(0);
         for (PieceType pieceType : PieceType.values())
@@ -19,12 +19,12 @@ public class RandomPlayer extends Player
             }
         }
 
-        //TODO: end game if no moves possible
         if (!possibleMoves.isEmpty())
         {
             PossibleMove moveToMake = possibleMoves.get(random.nextInt(possibleMoves.size()));
             putPieceOnPosition(moveToMake);
         }
+        else throw new NoPossibleMovesException();
     }
 
     public RandomPlayer(PlayerColor color, String name, Board board)
