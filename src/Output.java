@@ -21,13 +21,13 @@ public class Output
         {
             for (int y = 0; y < board.getSizeY(); y++)
             {
-                if (board.getFields()[x][y].getPiece() == null)
+                if (board.getFields()[y][x].getPiece() == null)
                 {
                     System.out.print(".");
                 }
                 else
                 {
-                    System.out.print(board.getFields()[x][y].getPiece().getLook());
+                    System.out.print(board.getFields()[y][x].getPiece().getLook());
                 }
             }
             System.out.print('\n');
