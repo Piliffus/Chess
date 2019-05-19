@@ -7,7 +7,15 @@ public class Board
 
     public void putPiece(Piece piece, Coordinate coordinate)
     {
+        // We must remove piece from it`s previous position, but only if it`s on the board
+        if (piece.getCurrentPosition() != null)
+        {
+            fields[piece.getCurrentPosition().getX()][piece.getCurrentPosition().getY()].setPiece(null);
+        }
+        // We then put piece on it`s new position
         fields[coordinate.getX()][coordinate.getY()].setPiece(piece);
+        // And update it`s currentPosition info used for calculating moves
+        piece.setCurrentPosition(coordinate);
     }
 
     public void printBoard()

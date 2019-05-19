@@ -47,7 +47,7 @@ public class GameController
     {
         for (Player player : players)
         {
-            player.PutPiecesOnStartingPositions(board);
+            player.PutPiecesOnStartingPositions();
         }
     }
 
@@ -74,12 +74,12 @@ public class GameController
             if (i == 0)
             {
                 output.printPlayerNamePrompt(PlayerColor.WHITE);
-                players.add(i, new RandomPlayer(PlayerColor.WHITE, input.readName()));
+                players.add(i, new RandomPlayer(PlayerColor.WHITE, input.readName(), board));
             }
             else if (i == 1)
             {
                 output.printPlayerNamePrompt(PlayerColor.BLACK);
-                players.add(i, new RandomPlayer(PlayerColor.BLACK, input.readName()));
+                players.add(i, new RandomPlayer(PlayerColor.BLACK, input.readName(), board));
             }
             else
             {
