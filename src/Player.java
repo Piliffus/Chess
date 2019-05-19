@@ -99,6 +99,16 @@ public abstract class Player
         }
     }
 
+    public final void removePiece(Piece removedPiece)
+    {
+        findListWithType(removedPiece.getPieceType()).remove(removedPiece);
+    }
+
+    public final boolean kingLost()
+    {
+        return findListWithType(PieceType.KING).isEmpty();
+    }
+
     private void putPieceOnPosition(Piece piece, Coordinate coordinate)
     {
         board.putPiece(piece, coordinate);

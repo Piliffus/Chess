@@ -12,6 +12,13 @@ public class Board
         {
             fields[piece.getCurrentPosition().getX()][piece.getCurrentPosition().getY()].setPiece(null);
         }
+        // If our destination is occupied by another piece, we remove it from the game. Calculation of possible moves
+        // ensures we won`t remove friendly piece
+        if (fields[coordinate.getX()][coordinate.getY()].getPiece() != null)
+        {
+            fields[coordinate.getX()][coordinate.getY()].getPiece().getOwner()
+                    .removePiece(fields[coordinate.getX()][coordinate.getY()].getPiece());
+        }
         // We then put piece on it`s new position
         fields[coordinate.getX()][coordinate.getY()].setPiece(piece);
         // And update it`s currentPosition info used for calculating moves

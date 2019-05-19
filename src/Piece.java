@@ -1,6 +1,7 @@
 public class Piece
 {
     private PieceType pieceType;
+    private Player owner;
     private PlayerColor color;
     private char look;
     private Coordinate currentPosition;
@@ -20,6 +21,11 @@ public class Piece
         this.currentPosition = currentPosition;
     }
 
+    public Player getOwner()
+    {
+        return owner;
+    }
+
     public PlayerColor getColor()
     {
         return color;
@@ -30,8 +36,9 @@ public class Piece
         return pieceType;
     }
 
-    public Piece(PieceType pieceType, PlayerColor color)
+    public Piece(PieceType pieceType, PlayerColor color, Player owner)
     {
+        this.owner = owner;
         this.pieceType = pieceType;
         this.color = color;
         this.look = PieceType.findLookFor(pieceType, color);

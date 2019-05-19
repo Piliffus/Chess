@@ -13,14 +13,20 @@ public class GameController
 
     public void start()
     {
-        gameOver = false;
+        restartGameOver();
         restartTurnNumber();
         restartPlayerPieces();
         playersSetUpPieces();
         printStartingBoard();
         playGame();
     }
-// TODO: usuwanie zbitych pionów, zbicie króla zwycięstwo, komunikaty o ruchach, zbiciu, końcu gry,
+
+    private void restartGameOver()
+    {
+        gameOver = false;
+    }
+
+    // TODO: komunikaty o ruchach, zbiciu, końcu gry - excep, timeout, krolzbity,
     private void playGame()
     {
         for (; turnNumber <= 50 && !gameOver; turnNumber++)
@@ -34,6 +40,8 @@ public class GameController
     {
         for (Player player : players)
         {
+            if (player.kingLost()) gameOver = true;
+
             if (!gameOver)
             {
                 try
@@ -123,7 +131,7 @@ public class GameController
         {
             for (int i = 0; i < PieceType.howManyStartingPiecesOfType(pieceType); i++)
             {
-                player.givePiece(new Piece(pieceType, player.getColor()));
+                player.givePiece(new Piece(pieceType, player.getColor(), player));
             }
         }
     }
