@@ -17,8 +17,10 @@ public class Output
 
     public static void printBoard(Board board)
     {
+        printBoardFrame(boardSides.TOP, board.getSizeX());
         for (int x = 0; x < board.getSizeX(); x++)
         {
+            printBoardFrame(boardSides.LEFT);
             for (int y = 0; y < board.getSizeY(); y++)
             {
                 if (board.getFields()[y][x].getPiece() == null)
@@ -30,7 +32,51 @@ public class Output
                     System.out.print(board.getFields()[y][x].getPiece().getLook());
                 }
             }
+            printBoardFrame(boardSides.RIGHT);
             System.out.print('\n');
         }
+        printBoardFrame(boardSides.BOTTOM, board.getSizeX());
+    }
+
+    private static void printBoardFrame(boardSides side)
+    {
+        switch (side)
+        {
+            case LEFT:
+            case RIGHT:
+                System.out.print('║');
+                break;
+        }
+    }
+
+    private static void printBoardFrame(boardSides side, int boardWidth)
+    {
+        char left = '?';
+        char right = '?';
+
+        switch (side)
+        {
+            case TOP:
+                left = '╔';
+                right = '╗';
+                break;
+            case BOTTOM:
+                left = '╚';
+                right = '╝';
+                break;
+        }
+
+        System.out.print(left);
+        for (int i = 0; i < boardWidth; i++)
+        {
+            System.out.print('═');
+        }
+        System.out.print(right);
+        System.out.print('\n');
+    }
+
+    private enum boardSides
+    {
+        LEFT, RIGHT, TOP, BOTTOM
     }
 }
