@@ -26,9 +26,12 @@ public class OutputStdout implements Output
     @Override
     public void printBoard(Board board)
     {
+        int initialYRow = 8;
+        printXRowsNames(board.getSizeX());
         printBoardFrame(boardSides.TOP, board.getSizeX());
         for (int x = 0; x < board.getSizeX(); x++)
         {
+            printYRowName(initialYRow - x);
             printBoardFrame(boardSides.LEFT);
             for (int y = 0; y < board.getSizeY(); y++)
             {
@@ -45,6 +48,23 @@ public class OutputStdout implements Output
             System.out.print('\n');
         }
         printBoardFrame(boardSides.BOTTOM, board.getSizeX());
+    }
+
+    private void printYRowName(int rowNumber)
+    {
+        System.out.print(rowNumber);
+    }
+
+    private void printXRowsNames(int boardWidth)
+    {
+        System.out.print("  ");
+        char initialCharacter = 'A';
+        for (int i = 0; i < boardWidth; i++)
+        {
+            System.out.print(initialCharacter);
+            initialCharacter++;
+        }
+        System.out.print('\n');
     }
 
     @Override
@@ -107,6 +127,13 @@ public class OutputStdout implements Output
         }
     }
 
+    @Override
+    public void printTurnNumber(int turnNumber)
+    {
+        System.out.println("Turn " + turnNumber + ":");
+        System.out.print('\n');
+    }
+
     private void printBoardFrame(boardSides side)
     {
         switch (side)
@@ -135,6 +162,7 @@ public class OutputStdout implements Output
                 break;
         }
 
+        System.out.print(" ");
         System.out.print(left);
         for (int i = 0; i < boardWidth; i++)
         {

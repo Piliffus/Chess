@@ -16,7 +16,16 @@ public class GameController
         restartPlayerPieces();
         playersSetUpPieces();
         printStartingBoard();
-        playTurn();
+        playGame();
+    }
+
+    private void playGame()
+    {
+        for (; turnNumber <= 50; turnNumber++)
+        {
+            output.printTurnNumber(turnNumber);
+            playTurn();
+        }
     }
 
     private void playTurn()
@@ -24,6 +33,7 @@ public class GameController
         for (Player player : players)
         {
             player.nextMove();
+            output.printBoard(board);
         }
     }
 
@@ -53,7 +63,7 @@ public class GameController
 
     private void restartTurnNumber()
     {
-        this.turnNumber = 0;
+        this.turnNumber = 1;
     }
 
     private void prepareBoard(int x, int y)
