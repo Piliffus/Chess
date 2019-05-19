@@ -4,22 +4,27 @@ import java.util.Objects;
 
 public abstract class Player
 {
-    protected PlayerColor color;
+    private PlayerColor color;
     private List<List<Piece>> pieces;
-    String name;
-    Output output = OutputStdout.getInstance();
+    private String name;
+    private Output output;
 
     public final PlayerColor getColor()
     {
         return color;
     }
 
-    public void printPieces()
+    public final String getName()
+    {
+        return name;
+    }
+
+    public final void printPieces()
     {
         output.printPieces(pieces);
     }
 
-    public void givePiece(Piece piece)
+    public final void givePiece(Piece piece)
     {
         Objects.requireNonNull(findListWithType(piece.getPieceType())).add(piece);
     }
@@ -45,7 +50,7 @@ public abstract class Player
         }
     }
 
-    public void restartPieces()
+    public final void restartPieces()
     {
         for (List<Piece> pieceType : pieces)
         {
@@ -53,7 +58,7 @@ public abstract class Player
         }
     }
 
-    public void PutPiecesOnStartingPositions(Board board)
+    public final void PutPiecesOnStartingPositions(Board board)
     {
         List<Coordinate> coordinates;
 
@@ -79,16 +84,20 @@ public abstract class Player
         return Objects.requireNonNull(findListWithType(pieceType)).get(whichPiece);
     }
 
-    public Player(PlayerColor color)
+    public Player(PlayerColor color, String name)
     {
+        this.output = OutputStdout.getInstance();
         this.color = color;
         // Make main list with types
-        pieces = new ArrayList<>(PieceType.howManyPieceTypes());
+        this.pieces = new ArrayList<>(PieceType.howManyPieceTypes());
 
         // Make specific lists with types
         for (int i = 0; i < PieceType.howManyPieceTypes(); i++)
         {
-            pieces.add(i, new ArrayList<>(1));
+            this.pieces.add(i, new ArrayList<>(1));
         }
+
+        this.name = name;
+
     }
 }

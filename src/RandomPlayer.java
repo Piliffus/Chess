@@ -1,7 +1,7 @@
 public class RandomPlayer extends Player
 {
-    public RandomPlayer(PlayerColor color)
+    public RandomPlayer(PlayerColor color, String name)
     {
-        super(color);
+        super(color, name);
     }
 }

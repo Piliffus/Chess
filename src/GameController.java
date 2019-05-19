@@ -5,8 +5,10 @@ public class GameController
 {
     private Board board;
     private List<Player> players;
+    private List<Spectator> spectators;
     private int turnNumber;
-    Output output = OutputStdout.getInstance();
+    private Output output;
+    private Input input;
 
     public void start()
     {
@@ -19,19 +21,17 @@ public class GameController
 
     private void printStartingBoard()
     {
-//        output.printStartingMessage();
+        output.printStartingMessage();
         board.printBoard();
-//        output.printPlayerNames(players);
+        output.printPlayerNames(players);
+        output.printSpectatorNames(spectators);
     }
 
     private void restartPlayerPieces()
     {
         for (Player player : players)
         {
-            if (player.getClass() != SpectatorPlayer.class)
-            {
-                giveStartingPieces(player);
-            }
+            giveStartingPieces(player);
         }
     }
 
@@ -39,10 +39,7 @@ public class GameController
     {
         for (Player player : players)
         {
-            if (player.getClass() != SpectatorPlayer.class)
-            {
-                player.PutPiecesOnStartingPositions(board);
-            }
+            player.PutPiecesOnStartingPositions(board);
         }
     }
 
@@ -59,21 +56,28 @@ public class GameController
     private void preparePlayers(int howManyPlayers)
     {
         //TODO: different types of players
-        players = new ArrayList<>(howManyPlayers);
+        players = new ArrayList<>(PlayerColor.howManyColors());
+        // If we have less players than colors, then amount of spectators defaults to 0, se we don`t get negative size
+        spectators = new ArrayList<>(howManyPlayers - PlayerColor.howManyColors() >= 0 ?
+                howManyPlayers - PlayerColor.howManyColors() : 0);
 
         for (int i = 0; i < howManyPlayers; i++)
         {
             if (i == 0)
             {
-                players.add(i, new RandomPlayer(PlayerColor.WHITE));
+                output.printPlayerNamePrompt(PlayerColor.WHITE);
+                players.add(i, new RandomPlayer(PlayerColor.WHITE, input.readName()));
             }
             else if (i == 1)
             {
-                players.add(i, new RandomPlayer(PlayerColor.BLACK));
+                output.printPlayerNamePrompt(PlayerColor.BLACK);
+                players.add(i, new RandomPlayer(PlayerColor.BLACK, input.readName()));
             }
             else
             {
-                players.add(i, new SpectatorPlayer(PlayerColor.COLORLESS));
+                // Excess players will be spectators
+                output.printSpectatorNamePrompt();
+                spectators.add(new Spectator(input.readName()));
             }
         }
     }
@@ -93,6 +97,8 @@ public class GameController
 
     public GameController(int boardXSize, int boardYSize, int howManyPlayers)
     {
+        this.input = InputStdin.getInstance();
+        this.output = OutputStdout.getInstance();
         prepareBoard(boardXSize, boardYSize);
         preparePlayers(howManyPlayers);
     }

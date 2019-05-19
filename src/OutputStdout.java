@@ -9,6 +9,7 @@ public class OutputStdout implements Output
         return ourInstance;
     }
 
+    @Override
     public void printPieces(List<List<Piece>> pieces)
     {
         for (List<Piece> pieceType: pieces)
@@ -22,6 +23,7 @@ public class OutputStdout implements Output
         System.out.print('\n');
     }
 
+    @Override
     public void printBoard(Board board)
     {
         printBoardFrame(boardSides.TOP, board.getSizeX());
@@ -43,6 +45,53 @@ public class OutputStdout implements Output
             System.out.print('\n');
         }
         printBoardFrame(boardSides.BOTTOM, board.getSizeX());
+    }
+
+    @Override
+    public void printStartingMessage()
+    {
+        System.out.println("Chessboard:");
+    }
+
+    @Override
+    public void printPlayerNames(List<Player> players)
+    {
+        for (Player player : players)
+        {
+            System.out.println(player.getColor().name() + ": " + player.getName());
+        }
+    }
+
+    @Override
+    public void printSpectatorNamePrompt()
+    {
+        System.out.println("Assign name to a spectator:");
+    }
+
+    @Override
+    public void printPlayerNamePrompt(PlayerColor color)
+    {
+        System.out.println("Assign name to player playing " + color.name() + " pieces:");
+    }
+
+    @Override
+    public void printSpectatorNames(List<Spectator> spectators)
+    {
+        boolean first = true;
+        for (Spectator spectator : spectators)
+        {
+            if (!first)
+            {
+                System.out.print(", " + spectator.getName());
+            }
+            else
+            {
+                System.out.print(spectator.getName());
+                first = false;
+            }
+        }
+
+        System.out.println(" are watching the game");
     }
 
     private void printBoardFrame(boardSides side)
