@@ -22,6 +22,7 @@ public class RandomPlayer extends Player
         if (!possibleMoves.isEmpty())
         {
             PossibleMove moveToMake = possibleMoves.get(random.nextInt(possibleMoves.size()));
+            output.prepareTurnEndMessage(moveToMake, board);
             putPieceOnPosition(moveToMake);
         }
         else throw new NoPossibleMovesException();

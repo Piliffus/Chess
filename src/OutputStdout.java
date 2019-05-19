@@ -2,11 +2,86 @@ import java.util.List;
 
 public class OutputStdout implements Output
 {
+    private String preparedEndTurnMessage;
+    private String preparedGameEndMessage;
+
     private static OutputStdout ourInstance = new OutputStdout();
 
     public static OutputStdout getInstance()
     {
         return ourInstance;
+    }
+
+    @Override
+    public void prepareTurnEndMessage(Player.PossibleMove moveToMake, Board board)
+    {
+        Piece otherPiece = board.getFields()[moveToMake.getNewCoordinate().getX()][moveToMake.getNewCoordinate().getY()].getPiece();
+        Piece movedPiece = moveToMake.getPiece();
+
+        preparedEndTurnMessage = "" + movedPiece.getLook();
+        preparedEndTurnMessage += " moves from ";
+        preparedEndTurnMessage += movedPiece.getCurrentPosition().toString();
+        preparedEndTurnMessage += " to ";
+        preparedEndTurnMessage += moveToMake.getNewCoordinate().toString();
+        if (otherPiece != null)
+        {
+            preparedEndTurnMessage += " beating ";
+            preparedEndTurnMessage += otherPiece.getLook();
+        }
+        preparedEndTurnMessage += '\n';
+    }
+
+    @Override
+    public void prepareGameEndMessage(List<Player> players, Player loser, GameController.GameEndConditions gameEndCondition)
+    {
+        String winnerName = "";
+        if (loser != null)
+        {
+            for (Player player : players)
+            {
+                if (player != loser)
+                {
+                    winnerName = player.getName();
+                    winnerName += " (";
+                    winnerName += player.getColor().name();
+                    winnerName += " pieces).";
+                    break;
+                }
+            }
+        }
+
+        preparedGameEndMessage = "";
+        switch (gameEndCondition)
+        {
+            case KING_DEFEATED:
+                preparedGameEndMessage += "The King has been defeated, game is over!\n";
+                preparedGameEndMessage += "And the winner is:\n";
+                preparedGameEndMessage += winnerName + '\n';
+                break;
+            case TIMEOUT:
+                preparedGameEndMessage += "Time is up!\n";
+                preparedGameEndMessage += "The game ends with a draw\n";
+                break;
+            case OUT_OF_MOVES:
+                preparedGameEndMessage += (loser == null ? "Somebody" : "Player " + loser.getName()) + " is out of moves!";
+                preparedGameEndMessage += "And the winner is:\n";
+                preparedGameEndMessage += winnerName + '\n';
+                break;
+        }
+    }
+
+    @Override
+    public void printPreparedTurnEndMessage()
+    {
+        System.out.print(preparedEndTurnMessage);
+        preparedEndTurnMessage = "";
+    }
+
+    @Override
+    public void printPreparedGameEndMessage()
+    {
+        System.out.print(preparedGameEndMessage);
+        preparedGameEndMessage = "";
     }
 
     @Override

@@ -6,8 +6,8 @@ public abstract class Player
     private PlayerColor color;
     private List<List<Piece>> pieces;
     private String name;
-    private Output output;
-    private Board board;
+    protected Output output;
+    protected Board board;
 
     public final PlayerColor getColor()
     {
@@ -46,6 +46,16 @@ public abstract class Player
     {
         private Piece piece;
         private Coordinate newCoordinate;
+
+        public Piece getPiece()
+        {
+            return piece;
+        }
+
+        public Coordinate getNewCoordinate()
+        {
+            return newCoordinate;
+        }
 
         public PossibleMove(Piece piece, Coordinate newCoordinate)
         {

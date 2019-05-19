@@ -10,6 +10,8 @@ public class GameController
     private Output output;
     private Input input;
     private boolean gameOver;
+    // If waitForUser is true game will wait for prompt from user before each turn
+    private boolean waitForUser;
 
     public void start()
     {
@@ -26,21 +28,37 @@ public class GameController
         gameOver = false;
     }
 
-    // TODO: komunikaty o ruchach, zbiciu, końcu gry - excep, timeout, krolzbity,
     private void playGame()
     {
+        if (waitForUser)
+        {
+            input.userConfirmation();
+        }
+
         for (; turnNumber <= 50 && !gameOver; turnNumber++)
         {
             output.printTurnNumber(turnNumber);
             playTurn();
+            if (waitForUser)
+            {
+                input.userConfirmation();
+            }
         }
+
+        if (!gameOver)
+        {
+            output.prepareGameEndMessage(players, null, GameEndConditions.TIMEOUT);
+            gameOver = true;
+        }
+
+        output.printPreparedGameEndMessage();
     }
 
     private void playTurn()
     {
         for (Player player : players)
         {
-            if (player.kingLost()) gameOver = true;
+            checkIfAnyKingDefeated();
 
             if (!gameOver)
             {
@@ -51,13 +69,33 @@ public class GameController
                 catch (NoPossibleMovesException e)
                 {
                     gameOver = true;
+                    // TODO: replace with loser
+                    output.prepareGameEndMessage(players, null, GameEndConditions.OUT_OF_MOVES);
                 }
                 finally
                 {
                     output.printBoard(board);
+                    output.printPreparedTurnEndMessage();
                 }
             }
         }
+    }
+
+    private void checkIfAnyKingDefeated()
+    {
+        for (Player player : players)
+        {
+            if (player.kingLost())
+            {
+                gameOver = true;
+                output.prepareGameEndMessage(players, player, GameEndConditions.KING_DEFEATED);
+            }
+        }
+    }
+
+    protected enum GameEndConditions
+    {
+        KING_DEFEATED, TIMEOUT, OUT_OF_MOVES
     }
 
     private void printStartingBoard()
@@ -136,8 +174,9 @@ public class GameController
         }
     }
 
-    public GameController(int boardXSize, int boardYSize, int howManyPlayers)
+    public GameController(int boardXSize, int boardYSize, int howManyPlayers, boolean waitForUser)
     {
+        this.waitForUser = waitForUser;
         this.input = InputStdin.getInstance();
         this.output = OutputStdout.getInstance();
         prepareBoard(boardXSize, boardYSize);

@@ -16,6 +16,13 @@ public class InputStdin implements Input
         return scanner.nextLine();
     }
 
+    @Override
+    public void userConfirmation()
+    {
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
+    }
+
     private InputStdin()
     {
     }

@@ -17,4 +17,12 @@ public interface Output
     void printPlayerNamePrompt(PlayerColor color);
 
     void printTurnNumber(int turnNumber);
+
+    void prepareTurnEndMessage(Player.PossibleMove moveToMake, Board board);
+
+    void printPreparedTurnEndMessage();
+
+    void printPreparedGameEndMessage();
+
+    void prepareGameEndMessage(List<Player> players, Player player, GameController.GameEndConditions gameEndCondition);
 }
