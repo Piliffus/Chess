@@ -16,7 +16,15 @@ public class GameController
         restartPlayerPieces();
         playersSetUpPieces();
         printStartingBoard();
-//        playTurn();
+        playTurn();
+    }
+
+    private void playTurn()
+    {
+        for (Player player : players)
+        {
+            player.nextMove();
+        }
     }
 
     private void printStartingBoard()
@@ -88,7 +96,7 @@ public class GameController
 
         for (PieceType pieceType : PieceType.values())
         {
-            for (int i = 0; i < RuleBook.getInstance().howManyStartingPiecesOfType(pieceType); i++)
+            for (int i = 0; i < PieceType.howManyStartingPiecesOfType(pieceType); i++)
             {
                 player.givePiece(new Piece(pieceType, player.getColor()));
             }

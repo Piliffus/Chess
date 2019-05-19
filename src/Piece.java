@@ -18,6 +18,6 @@ public class Piece
     {
         this.pieceType = pieceType;
         this.color = color;
-        this.look = RuleBook.getInstance().findLookFor(pieceType, color);
+        this.look = PieceType.findLookFor(pieceType, color);
     }
 }

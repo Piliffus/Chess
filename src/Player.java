@@ -29,6 +29,14 @@ public abstract class Player
         Objects.requireNonNull(findListWithType(piece.getPieceType())).add(piece);
     }
 
+    public final void restartPieces()
+    {
+        for (List<Piece> pieceType : pieces)
+        {
+            pieceType.clear();
+        }
+    }
+
     private List<Piece> findListWithType(PieceType pieceType)
     {
         switch (pieceType)
@@ -50,21 +58,13 @@ public abstract class Player
         }
     }
 
-    public final void restartPieces()
-    {
-        for (List<Piece> pieceType : pieces)
-        {
-            pieceType.clear();
-        }
-    }
-
     public final void PutPiecesOnStartingPositions(Board board)
     {
         List<Coordinate> coordinates;
 
         for (PieceType pieceType : PieceType.values())
         {
-            coordinates = RuleBook.getInstance().getStartingCoordinatesFor(pieceType, this.color);
+            coordinates = PieceType.getStartingCoordinatesFor(pieceType, this.color);
 
             for (int i = 0, coordinatesSize = coordinates.size(); i < coordinatesSize; i++)
             {
@@ -100,4 +100,6 @@ public abstract class Player
         this.name = name;
 
     }
+
+    public abstract void nextMove();
 }

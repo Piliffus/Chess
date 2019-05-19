@@ -78,10 +78,16 @@ public class OutputStdout implements Output
     public void printSpectatorNames(List<Spectator> spectators)
     {
         boolean first = true;
+        boolean justOneSpectator = true;
         for (Spectator spectator : spectators)
         {
             if (!first)
             {
+                if (justOneSpectator)
+                {
+                    justOneSpectator = false;
+                }
+
                 System.out.print(", " + spectator.getName());
             }
             else
@@ -91,7 +97,14 @@ public class OutputStdout implements Output
             }
         }
 
-        System.out.println(" are watching the game");
+        if (justOneSpectator)
+        {
+            System.out.println(" is watching the game");
+        }
+        else
+        {
+            System.out.println(" are watching the game");
+        }
     }
 
     private void printBoardFrame(boardSides side)
