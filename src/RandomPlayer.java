@@ -28,9 +28,9 @@ public class RandomPlayer extends Player
         else throw new NoPossibleMovesException(this);
     }
 
-    public RandomPlayer(PlayerPiecesColor color, String name, Board board)
+    public RandomPlayer(PlayerPiecesColor color, String name, Board board, Output output)
     {
-        super(color, name, board);
+        super(color, name, board, output);
         this.random = new Random();
     }
 }

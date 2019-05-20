@@ -7,6 +7,7 @@ public class GameController
     private List<Player> players;
     private List<Spectator> spectators;
     private int turnNumber;
+    private int gameLength;
     private Output output;
     private Input input;
     private boolean gameOver;
@@ -39,9 +40,8 @@ public class GameController
             input.userConfirmation();
         }
 
-        for (; turnNumber <= 50 && !gameOver; turnNumber++)
+        for (; turnNumber <= gameLength && !gameOver; turnNumber++)
         {
-            output.printTurnNumber(turnNumber);
             playTurn();
             if (waitForUser)
             {
@@ -77,7 +77,7 @@ public class GameController
                 }
                 finally
                 {
-                    output.printBoard(board);
+                    output.printBoard(board, turnNumber);
                     output.printPreparedTurnEndMessage();
                 }
             }
@@ -103,13 +103,8 @@ public class GameController
 
     private void printStartingBoard()
     {
-        output.printStartingMessage();
-        board.printBoard();
-        output.printPlayerNames(players);
-        if (!spectators.isEmpty())
-        {
-            output.printSpectatorNames(spectators);
-        }
+        output.printStartingMessage(players, spectators, board);
+
     }
 
     private void restartPlayerPieces()
@@ -135,7 +130,7 @@ public class GameController
 
     private void prepareBoard(int x, int y)
     {
-        this.board = new Board(x, y);
+        this.board = new Board(x, y, output);
     }
 
     private void preparePlayers(int howManyPlayers)
@@ -150,13 +145,13 @@ public class GameController
         {
             if (i == 0)
             {
-                if (!randomNames) output.printPlayerNamePrompt(PlayerPiecesColor.white);
-                players.add(i, new RandomPlayer(PlayerPiecesColor.white, randomNames ? input.randomName() : input.readName(), board));
+                if (!randomNames) output.printPlayerNamePrompt(PlayerPiecesColor.black);
+                players.add(i, new RandomPlayer(PlayerPiecesColor.black, randomNames ? input.randomName() : input.readName(), board, output));
             }
             else if (i == 1)
             {
-                if (!randomNames) output.printPlayerNamePrompt(PlayerPiecesColor.black);
-                players.add(i, new RandomPlayer(PlayerPiecesColor.black, randomNames ? input.randomName() : input.readName(), board));
+                if (!randomNames) output.printPlayerNamePrompt(PlayerPiecesColor.white);
+                players.add(i, new RandomPlayer(PlayerPiecesColor.white, randomNames ? input.randomName() : input.readName(), board, output));
             }
             else
             {
@@ -180,12 +175,14 @@ public class GameController
         }
     }
 
-    public GameController(int boardXSize, int boardYSize, int howManyPlayers, boolean waitForUser, boolean randomNames)
+    public GameController(int boardXSize, int boardYSize, int howManyPlayers, int gameLength, boolean waitForUser,
+                          boolean randomNames, boolean animated)
     {
+        this.gameLength = gameLength;
         this.waitForUser = waitForUser;
         this.randomNames = randomNames;
         this.input = InputStdin.getInstance();
-        this.output = OutputStdout.getInstance();
+        this.output = (animated ? OutputStdoutAnimated.getInstance() : OutputStdout.getInstance());
         prepareBoard(boardXSize, boardYSize);
         preparePlayers(howManyPlayers);
     }

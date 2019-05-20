@@ -4,9 +4,9 @@ public interface Output
 {
     void printPieces(List<List<Piece>> pieces);
 
-    void printBoard(Board board);
+    void printBoard(Board board, int turnNumber);
 
-    void printStartingMessage();
+    void printStartingMessage(List<Player> players, List<Spectator> spectators, Board board);
 
     void printPlayerNames(List<Player> players);
 

@@ -4,7 +4,7 @@ public class OutputStdout implements Output
 {
     private String preparedEndTurnMessage;
     private String preparedGameEndMessage;
-
+    protected boolean printTurnNumber = false;
     private static OutputStdout ourInstance = new OutputStdout();
 
     public static OutputStdout getInstance()
@@ -13,7 +13,7 @@ public class OutputStdout implements Output
     }
 
     @Override
-    public void prepareTurnEndMessage(Player.PossibleMove moveToMake, Board board)
+    public final void prepareTurnEndMessage(Player.PossibleMove moveToMake, Board board)
     {
         Piece otherPiece = board.getFields()[moveToMake.getNewCoordinate().getX()][moveToMake.getNewCoordinate().getY()].getPiece();
         Piece movedPiece = moveToMake.getPiece();
@@ -32,14 +32,14 @@ public class OutputStdout implements Output
     }
 
     @Override
-    public void prepareGameEndMessage(List<Player> players, Player loser, GameController.GameEndConditions gameEndCondition)
+    public final void prepareGameEndMessage(List<Player> players, Player loser, GameController.GameEndConditions gameEndCondition)
     {
         String winnerName = "";
         if (loser != null)
         {
             for (Player player : players)
             {
-                if (player != loser)
+                if (player.equals(loser))
                 {
                     winnerName = player.getName();
                     winnerName += " (";
@@ -71,21 +71,27 @@ public class OutputStdout implements Output
     }
 
     @Override
-    public void printPreparedTurnEndMessage()
+    public final void printPreparedTurnEndMessage()
     {
         System.out.print(preparedEndTurnMessage);
         preparedEndTurnMessage = "";
     }
 
+    protected void clearScreen()
+    {
+        System.out.print("\033\143");
+
+    }
+
     @Override
-    public void printPreparedGameEndMessage()
+    public final void printPreparedGameEndMessage()
     {
         System.out.print(preparedGameEndMessage);
         preparedGameEndMessage = "";
     }
 
     @Override
-    public void printPieces(List<List<Piece>> pieces)
+    public final void printPieces(List<List<Piece>> pieces)
     {
         for (List<Piece> pieceType: pieces)
         {
@@ -99,13 +105,19 @@ public class OutputStdout implements Output
     }
 
     @Override
-    public void printBoard(Board board)
+    public void printBoard(Board board, int turnNumber)
     {
+        if (printTurnNumber)
+        {
+            printTurnNumber(turnNumber);
+            printTurnNumber = false;
+        }
+        else printTurnNumber = true;
         printXRowsNames(board.getSizeX());
         printBoardFrame(boardSides.TOP, board.getSizeX());
         for (int y = board.getSizeY() - 1; y >= 0; y--)
         {
-            printYRowName(y+1);
+            printYRowName(y + 1);
             printBoardFrame(boardSides.LEFT);
             for (int x = 0; x < board.getSizeX(); x++)
             {
@@ -142,13 +154,26 @@ public class OutputStdout implements Output
     }
 
     @Override
-    public void printStartingMessage()
+    public void printStartingMessage(List<Player> players, List<Spectator> spectators, Board board)
     {
+        clearScreen();
         System.out.println("Chessboard:");
+        printStaringBoard(board);
+        printPlayerNames(players);
+        if (!spectators.isEmpty())
+        {
+            printSpectatorNames(spectators);
+        }
+    }
+
+    protected void printStaringBoard(Board board)
+    {
+        int turn = 0;
+        printBoard(board, turn);
     }
 
     @Override
-    public void printPlayerNames(List<Player> players)
+    public final void printPlayerNames(List<Player> players)
     {
         for (Player player : players)
         {
@@ -157,19 +182,19 @@ public class OutputStdout implements Output
     }
 
     @Override
-    public void printSpectatorNamePrompt()
+    public final void printSpectatorNamePrompt()
     {
         System.out.println("Assign name to a spectator:");
     }
 
     @Override
-    public void printPlayerNamePrompt(PlayerPiecesColor color)
+    public final void printPlayerNamePrompt(PlayerPiecesColor color)
     {
         System.out.println("Assign name to player playing " + color.name() + " pieces:");
     }
 
     @Override
-    public void printSpectatorNames(List<Spectator> spectators)
+    public final void printSpectatorNames(List<Spectator> spectators)
     {
         boolean first = true;
         boolean justOneSpectator = true;
@@ -202,7 +227,7 @@ public class OutputStdout implements Output
     }
 
     @Override
-    public void printTurnNumber(int turnNumber)
+    public final void printTurnNumber(int turnNumber)
     {
         System.out.println("Turn " + turnNumber + ":");
         System.out.print('\n');
@@ -246,12 +271,12 @@ public class OutputStdout implements Output
         System.out.print('\n');
     }
 
-    private enum boardSides
+    protected enum boardSides
     {
         LEFT, RIGHT, TOP, BOTTOM
     }
 
-    private OutputStdout()
+    protected OutputStdout()
     {
     }
 }

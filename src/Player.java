@@ -9,10 +9,10 @@ public abstract class Player
     private List<List<Piece>> pieces;
     private String name;
 
-    public Player(PlayerPiecesColor color, String name, Board board)
+    public Player(PlayerPiecesColor color, String name, Board board, Output output)
     {
         this.board = board;
-        this.output = OutputStdout.getInstance();
+        this.output = output;
         this.color = color;
         // Make main list with types
         this.pieces = new ArrayList<>(PieceType.howManyPieceTypes());

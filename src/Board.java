@@ -25,11 +25,6 @@ class Board
         piece.setCurrentPosition(coordinate);
     }
 
-    public void printBoard()
-    {
-        output.printBoard(this);
-    }
-
     public int getSizeX()
     {
         return sizeX;
@@ -45,9 +40,9 @@ class Board
         return fields;
     }
 
-    public Board(int sizeX, int sizeY)
+    public Board(int sizeX, int sizeY, Output output)
     {
-        this.output = OutputStdout.getInstance();
+        this.output = output;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.fields = new Field[sizeX][sizeY];
