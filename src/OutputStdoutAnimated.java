@@ -18,11 +18,8 @@ public class OutputStdoutAnimated extends OutputStdout
         super.printBoard(board, turnNumber);
         if (!printTurnNumber) printTurnNumber = true;
     }
-/*
-    todo diferent OS recognition
-    todo king defeated bug - wrong loser
-*/
-private void waitFrame()
+
+    private void waitFrame()
     {
         try
         {

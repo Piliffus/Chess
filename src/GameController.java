@@ -16,8 +16,6 @@ public class GameController
     // If randomNames is true game won`t ask player for custom player names
     private boolean randomNames;
 
-    // TODO: fauxAnimatedMode
-
     public void start()
     {
         restartGameOver();
