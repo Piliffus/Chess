@@ -144,12 +144,14 @@ public class GameController
             if (i == 0)
             {
                 if (!randomNames) output.printPlayerNamePrompt(PlayerPiecesColor.black);
-                players.add(i, new RandomPlayer(PlayerPiecesColor.black, randomNames ? input.randomName() : input.readName(), board, output));
+                players.add(i, new AggressivePlayer(PlayerPiecesColor.black, randomNames ? input.randomName() :
+                        input.readName(), board, output));
             }
             else if (i == 1)
             {
                 if (!randomNames) output.printPlayerNamePrompt(PlayerPiecesColor.white);
-                players.add(i, new RandomPlayer(PlayerPiecesColor.white, randomNames ? input.randomName() : input.readName(), board, output));
+                players.add(i, new AggressivePlayer(PlayerPiecesColor.white, randomNames ? input.randomName() :
+                        input.readName(), board, output));
             }
             else
             {

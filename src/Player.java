@@ -27,6 +27,21 @@ public abstract class Player
 
     }
 
+    protected final List<PossibleMove> getAllPossibleMoves()
+    {
+        List<PossibleMove> possibleMoves = new ArrayList<>(0);
+        for (PieceType pieceType : PieceType.values())
+        {
+            List<Piece> pieces = findListWithType(pieceType);
+            for (Piece piece : pieces)
+            {
+                possibleMoves.addAll(calculatePossibleMoves(piece));
+            }
+        }
+
+        return possibleMoves;
+    }
+
     public final PlayerPiecesColor getColor()
     {
         return color;
